@@ -9,6 +9,9 @@ relative_or_absolute_path_to_file = '.'
 #findReplace("some_dir", "find this", "replace with this", "*.txt")
 #https://stackoverflow.com/questions/4205854/python-way-to-recursively-find-and-replace-string-in-text-files
 def findReplaceAllWords(directory):
+    replaceWhat = []
+    replaceWith = []
+
     for path, dirs, files in os.walk(os.path.abspath(directory)):
 
         for filename in fnmatch.filter(files, "*.dart"):
@@ -19,17 +22,19 @@ def findReplaceAllWords(directory):
             newfilename = filename.replace('-', '_')
             newfilename.lower()
 
-            findReplaceFileName(directory, filename, newfilename)
+            replaceWhat.append('/'+filename)
+            replaceWith.append('/'+newfilename)
+
+            #delete old file
             os.unlink(filepath)
 
             newfilepath =  os.path.join(path, newfilename)
 
-            # s = s.replace(find, replace)
+            #create new file
             with open(newfilepath, "a+") as f:
                 f.write(s)
 
-
-def findReplaceFileName(directory, what, withi):
+    # //update all files with new name
     for path, dirs, files in os.walk(os.path.abspath(directory)):
 
         for filename in fnmatch.filter(files, "*.dart"):
@@ -37,7 +42,11 @@ def findReplaceFileName(directory, what, withi):
             with open(filepath) as f:
                 s = f.read()
 
-            s = s.replace(what, withi)
+            i = 0
+            for x in replaceWhat:
+                what = replaceWhat[i]
+                withi = replaceWith[i]
+                s = s.replace(what, withi)
 
             # s = s.replace(find, replace)
             with open(filepath, "w") as f:
